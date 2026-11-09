@@ -1,4 +1,5 @@
- async function getAllStudents(){
+ async function getAllStudents(limit,offset,course,yearOfStudy){
+   
   return [];
     
 }

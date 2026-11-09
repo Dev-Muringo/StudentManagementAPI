@@ -4,19 +4,40 @@
      require('../services/studentService');
 
  async function getAllStudents(req,res){
- const students=await getAllStudentsService();
- res.send(students);
+    try{
+   const {page,limit}=req.pagination;
+const { course, yearOfStudy } = req.filters;
+const offset = (page - 1) * limit;
+const students=await getAllStudentsService(limit,offset,course,yearOfStudy);
+res.status(200).json({
+    success:true,
+    message:"Students retrieved successfully",
+    data:students
+})}catch(error){
+    res.status(500).json({
+        success:false,
+        message:"An error occurred while retrieving students",
+        error:{
+            code:"INTERNAL_SERVER_ERROR"
+        }
+    })
+}
  }
  async function registerStudent(req,res){
     try{
     const student= await registerStudentService(req.body);
     res.status(201).json({
+    success:true,
     message: "Student registered successfully",
     data: student
 });
     }catch(error){
         res.status(400).json({
-            message:error.message
+            success:false,
+            message:error.message,
+            error:{
+                code:"VALIDATION_ERROR"
+            }
         })
     }
  }
