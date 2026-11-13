@@ -1,4 +1,4 @@
-
+const fs=require('fs');
  const {getAllStudents:getAllStudentsService,
     registerStudent:registerStudentService} =
      require('../services/studentService');
@@ -22,16 +22,33 @@ res.status(200).json({
         }
     })
 }
- }
+}
  async function registerStudent(req,res){
     try{
-    const student= await registerStudentService(req.body);
+       const profilePicture = req.file?.path; 
+   const imageUrl = profilePicture
+    ? `http://localhost:3000/${profilePicture.replace(/\\/g, "/")}`
+    : null;
+    const student= await registerStudentService({
+        ...req.body,
+        yearOfStudy:Number(req.body.yearOfStudy),
+        profilePicture:imageUrl
+    });
+   
     res.status(201).json({
     success:true,
     message: "Student registered successfully",
     data: student
-});
+})
     }catch(error){
+    
+    if(req.file?.path){
+        try{
+            await fs.promises.unlink(req.file.path);
+        }catch(cleanupError){
+            console.error("Failed to delete uploaded image:",cleanupError);
+        }
+    }
         res.status(400).json({
             success:false,
             message:error.message,
