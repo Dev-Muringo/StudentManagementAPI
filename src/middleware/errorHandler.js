@@ -6,8 +6,7 @@
         //handle multer errors
         if(err.code==='LIMIT_FILE_SIZE'){
             return res.status(400).json({
-                success:false,
-                message:"Image exceeds the maximum allowed size of 2MB"
+       message:"Image exceeds the maximum allowed size of 2MB"
             })
         }
         return res.status(400).json({

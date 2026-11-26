@@ -1,6 +1,8 @@
 const fs=require('fs');
  const {getAllStudents:getAllStudentsService,
-    registerStudent:registerStudentService} =
+        registerStudent:registerStudentService,
+        loginStudent:loginStudentService
+    } =
      require('../services/studentService');
 
  async function getAllStudents(req,res){
@@ -58,4 +60,25 @@ res.status(200).json({
         })
     }
  }
- module.exports={getAllStudents,registerStudent};
+
+ //student login
+ async function loginStudent(req,res){
+    try{
+        const {studentId,password}=req.body
+    
+    const student=await loginStudentService(
+        studentId,password
+    );
+    return res.status(200).json({
+        success:true,
+        message:"Login successful",
+        data:student
+    });
+    }catch(error){
+        return res.status(401).json({
+            success:false,
+            message:error.message
+        });
+    }
+ }
+ module.exports={getAllStudents,registerStudent,loginStudent};
